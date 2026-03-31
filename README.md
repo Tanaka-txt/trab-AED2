@@ -111,3 +111,111 @@ Tam:   (1B) |      (4B)       |      (4B)       |      (4B)       |       (4B)
 ---
 
 # Temos algumas restrições apartir da pagina 12 do arquivo e temos que gravar o vídeo
+
+---
+
+# Anotações aula:
+
+- Não pode usar STD.bool
+
+Tem que seguir do jeito que está nas específicações
+
+- Desconsiderar SLA oque enginers ;-;
+
+- Run codes roda em linux, poder dar b.o com o ultimo caracter do windows e o linux
+
+- TUDO CULPA DO WINDOWS!
+
+- Disabistrair a aula do código (Usem o livro, "Folki File Scripter" - Capa branca tem pdf, cobre parte teórica e tem implementação em código) [Cuidado a biblioteca que usamos em C não tinha no livro ent pode ter muita modificação mas pode ter muita diferença e temos que alterar de acordo com o C de HJ em dia]
+
+- POSSíVEL PROBLEMA, o RRN é o numero raltivo entre os registros, esse numero pode mudar, isso em remover e inserir algo pode fazer com que fique com RRNs diferentes. RRN é só no arquivo binário
+
+- Metodo de avaliação com base nm features, modularização, comentário, código e variáveis certos. (implementou certo? Busca que você usou pode usar? Teoria pode estár errada)
+
+
+       ________________
+      |                |
+      |________________| HEADER
+    0 |                |
+    1 |                | RRN
+    2 |                |
+   ...|________________|
+
+ - Exemplo dos monitores sem campos variado!!!!!! (Só tamanho fixo o trabalho e tem que fazer a função de busca (3) bem modularizada pois tem que reuzar ela, fazer bem feito tudo)
+
+ // ------ Structs.h
+
+# pragma once
+
+typedef struct reg{ // Struct registro, usado para criar a base para ser colocado no arq. binário
+  char* nusp;
+  const float nota;
+} Reg; // Melhor ter variaveis com nomes com sentido
+
+typedef struct header {
+  char* f1; //field 1
+  char* f2; //field 2
+} Header;
+
+void print_reg(const Header* h, const Reg* r);
+
+void free_reg(Reg* r);
+
+void free
+
+// CSV:
+// NUSP,NOTA
+// 1231223123, 9.10
+// ....
+
+// A struct é aquilo que vamos usar para construir o arquivo binário com base num CSV que sabemos como funciona com separação de ","
+// o header é ignorado no arquivo binário
+
+// nem todos os CSVs vão ter todos os campos
+// Exemplo:
+// a,b,c
+// a,,c podemos usar para verificar esses vazios com RTSTOK???
+
+// Posso querer buscar todos os registros do programa com NULO e tenho que achar filtrando algum campo valendo -1
+
+// RTSTOK - T | Ba | C     ==> gostariamos de recuperar cada um desses itens sem delimitador, tokenização é separar as coisas semanticas por um padrão
+// STRSEp - podemos usar para pegar um valor (N entendi bem ;-;)
+// Tratar como TAD com ponteiros pode ajudar, tratar como emcapsulamento com os .h?
+
+// Modularizar é tipo, repeti variaz vezes posso por em uma função, pode por em um arquivo separado, não precisa criar um arquivo separado para cada função
+
+// escrever campo a campo, não a struct inteira, pq vai dar merda
+
+// Cada funcionalidar um arqiovo .c
+// Da pra ter um .h para implementar todas as funcionalidades (Se achar que tem coisa que precisa ser TAD e fizer sentido na aplicação, pode usar)
+
+// Funcionalidade SELECT
+// Posso criar uma struct só pro filtro, usar struct do header.... (Me perdi aaaa)
+// Posso usar TAD usando string convertindo os tipos de dados
+
+// .bin ajuda a comparar com o CSV tipo hexdump
+// Vamos usar para o SLECTS, busca por RRN
+// Usamos o bin para comparar os arquivos binários com o hexdump, isso a gente usa para comparar os arquivos binarios podemos ver se estão iguais / semelhantes
+
+// MAIN MOSTRA OQUE NÃO É PARA SER FEITO, DEIXAR A MAIN O MAIS LIMPO POSSÍVEL!!!!!
+// USAR O EOF pode da ruim!
+// Alocar com várias memórias e vários frees
+
+// Fseek e F tell - funções caras, usem com sabedoria.
+
+// tem que marcar consistente
+// Se esquecer de atualizar o cabeçalho, vai dar ruim no runcodes, e temos que ser eficiente, n ficar abrindo e fechando pois abrir e fechar é caro!!!!
+
+// MAKEFILE gerar com IA
+
+// Não precisa usar o cabeçalho para printar o registro.
+
+//  pode usar a extensão do VSCODE tipo hexdump  "Hexeditor"(MAIOR FACILIDADE DE DEBUGAR O TRABALHO, OLHAR PELO CÓDIGO BINÁRIO!!!)
+// Para comparar 2 binarios usa o hexdump!!!!
+
+//--------- ler_arq.h
+
+#include <string.h>
+#include <stdio.h>
+#include "structs.h"
+
