@@ -99,6 +99,7 @@ Tam:   (1B) |      (4B)       |      (4B)       |      (4B)       |       (4B)
   - WHERE critário de busca, filtro pras buscar
 
   Permite a recuperação de dados de todos os registro de arquivo de dados de entrada de forma que esses registro satisfaçam um critério de busca determinado pela usuário. A busca deve ser feita considerando um ou mais campos. Por exemplo. é possível realizar busca considerando somente o campo codEstacao ou cosiderando os campos nomeEstacao e nomeLinha. Essa funcionalidade pode retornar 0 = nenhum registro satisfaz o critério, 1 = quando apenas um satisfaz o critério de busca, ou varios registros. os valores dos campos tipo STRING deve ser específicados entre aspas duplas ". Para manipulação de Strings com aspas duplas pode usar a função "scan_quote_string" disponibilizada na pagina do projeto. Para a busca de campos nulos, deve específicar o valor NULO. Registros logicamente removidos não devem ser exibidos, o arquivo de dados de entrada deve ser percorrido apropriadamente.
+  
   ![alt text](image-2.png)
   ![alt text](image-3.png)
 
@@ -111,6 +112,7 @@ Tam:   (1B) |      (4B)       |      (4B)       |      (4B)       |       (4B)
 ---
 
 # Temos algumas restrições apartir da pagina 12 do arquivo e temos que gravar o vídeo
+<<<<<<< HEAD
 
 ---
 
@@ -219,3 +221,5 @@ void free
 #include <stdio.h>
 #include "structs.h"
 
+=======
+>>>>>>> e6629c90e6f6cbb35eb5f0bcb48495bac50bfbd4
