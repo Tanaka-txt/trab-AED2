@@ -8,8 +8,8 @@ void main() {
         case 1 :
           /*Função*/
           // printf("1\n");
-          // banana();
-          read_csv();
+          banana();
+          // read_csv();
           break;
         case 2 :
           /*Função*/
