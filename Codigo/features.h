@@ -11,6 +11,6 @@
 void banana();
 
 void BinarioNaTela(char *arquivo);
-void read_csv();
+void read_csv(char *arq_csv, char *arq_bin);
 
 #endif

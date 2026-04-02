@@ -33,7 +33,7 @@ typedef struct registro_cabecalho {
 
 // struct para estrura de dados 80 bytes MAX
 typedef struct registro_dados {
-  char status_removido[0]; // status se foi removido 0 ou 1  ===== 1 bytes
+  char status_removido[1]; // status se foi removido 0 ou 1  ===== 1 bytes
   int prox_queue; // proximo RRN da fila                     ===== 4 bytes
   int codEstacao; //                                         ===== 4 bytes
   int codLinha;//                                            ===== 4 bytes
@@ -42,9 +42,9 @@ typedef struct registro_dados {
   int codLinhaIntegra; //                                    ===== 4 bytes
   int codEstIntegra; //                                      ===== 4 bytes
   int tamNomeEstacao; //                                     ===== 4 bytes
-  char nomeEstacao; //                                      ===== - bytes (Tem que remover 0 \0) melhor alocar com malloc de acordo com seu tamanho
+  char *nomeEstacao; //                                      ===== - bytes (Tem que remover 0 \0) melhor alocar com malloc de acordo com seu tamanho
   int tamNomeLinha;//                                        ===== 4 bytes
-  char nomeLinha;//                                         ===== - bytes (Tem que remover 0 \0) melhor alocar com malloc de acordo com seu tamanho
+  char *nomeLinha;//                                         ===== - bytes (Tem que remover 0 \0) melhor alocar com malloc de acordo com seu tamanho
 }reg_dados;
 
 // BinarioNaTela();
@@ -53,27 +53,31 @@ typedef struct registro_dados {
 // leitura csv, fazer filtro para interpretar cada coluna da tabela ",", filtrar condições se dado pode ser escrito
 
 reg_cabecalho cabecalho;
-
+char *verifica_estacao[150]; // usado para verificar estações diferentes
+char *verifica_pares[150]; // verifica pares de estações
+char *cod_estacoes[150];
+char *cod_proxEs[150];
+void write_bin();
 //  ________ _____________ _____________ _______________ __________________
 // |        |             |             |               |                  |
 // | Status |    topo     |   proxRRN   |  nroEstacoes  | nroParesEstacoes |
 // |________|_____________|_____________|_______________|__________________|
 
-int *ultimoRRN;
+int ultimoRRN = 0; // tem que apontar para uma atualização do RRN
 
 void create_cabecalho(){
   cabecalho.status = '0';
   cabecalho.topo = -1;
-  cabecalho.proxRRN = *ultimoRRN+1; // Comeã em 0, 0+1 = 1
+  cabecalho.proxRRN = ultimoRRN+1; // Comeã em 0, 0+1 = 1
   cabecalho.nroEstacoes = 0;
   cabecalho.nroParesEstacoes = 0;
 }
 
 
-void read_csv(){
+void read_csv(char arq_csv[256], char arq_bin[256]){
 
   // =-=-= Abrimos o Arquivo CSV =-=-=
-  FILE *estacoes = fopen("estacoes.csv", "r"); // csv
+  FILE *estacoes = fopen(arq_csv, "r"); // csv cria o arquivo e se for existente ele reescreve por cima
   // FILE *bin = fopen("saida.bin", "wb"); // bin escrevo nele 
 
   if (estacoes == NULL) { // Verifica se foi possível abrir arquivo
@@ -83,60 +87,171 @@ void read_csv(){
 
   char linha[256]; // ele começa no 256 pois ele pula a primeira linha com 255 caracteres + "\0". 256+256 =  512 (BUFFER!!!)
   char *ptr = linha; // loop linha += linha????
-  reg_dados registro[1000];
+  reg_dados registro;
   int i = 0;
 
   fgets(linha, 256, estacoes); // Pula o cabeçalho do csv
 
-  while (fgets(linha, 256, estacoes)) { // faz o loop para leitura das linhas do csv
+  while (fgets(linha, 256, estacoes)) { // faz o loop para leitura das linhas do csv (Mudar o loop para verificar que é o fim do arquivo sem usar o EOF)
     char *ptr = linha;
+    char *temp; // recebe a leitura dos campos variados para alocar memória de acordo com o necessário
 
-    registro[i].status_removido[0] = '0'; // status removido 0-não /1-sim (status de todo o registro quando é "inicializado")
+    registro.status_removido[0] = '0'; // status removido 0-não /1-sim (status de todo o registro quando é "inicializado")
 
-    registro[i].codEstacao = atoi(strsep(&ptr, ","));
-    registro[i].nomeEstacao = strsep(&ptr,",");
-    registro[i].codLinha = atoi(strsep(&ptr,","));
-    registro[i].nomeLinha = strsep(&ptr,",");
-    registro[i].codProxEstacao = atoi(strsep(&ptr,","));
-    registro[i].distProxEstacao = atoi(strsep(&ptr,","));
-    registro[i].codLinhaIntegra = atoi(strsep(&ptr,","));
-    registro[i].codEstIntegra = atoi(strsep(&ptr,","));
+    // - CodEstação
+    temp = strsep(&ptr, ",");
+    registro.codEstacao = atoi(temp);
+    if(registro.codEstacao % 2 == 0){
+      cabecalho.nroParesEstacoes += 1;
+    }
+    cod_estacoes[i] = registro.codEstacao;
 
-      // campo pode ser vazio
-      char *campo = strsep(&ptr, ",");
-      if (campo == NULL || strlen(campo) == 0)
-          registro[i].codLinhaIntegra = -1;
-      else
-          registro[i].codLinhaIntegra = atoi(campo);
 
-      campo = strsep(&ptr, ",");
-      if (campo == NULL || strlen(campo) == 0)
-          registro[i].codEstIntegra = -1;
-      else
-          registro[i].codEstIntegra = atoi(campo);
+    // - Nome estação
+    temp = strsep(&ptr, ",");
+    registro.nomeEstacao = malloc(strlen(temp)+1); // faz leitura, coloca em temp e ve o tamanho e aloca o tamanho+1
+    temp[strcspn(temp, "\n")] = '\0';// limpeza strcopy
+    strcpy(registro.nomeEstacao, temp); // copia a informação obtida na var do registro
+
+    registro.tamNomeEstacao = strlen(temp); // pega tamanho do nome da estação
+
+      for(int i = 0; i < 100; i++){
+        if(registro.nomeEstacao == i){
+          break;
+        }
+        else{
+          cabecalho.nroEstacoes++; // Soma se não estiver lá
+        }
+      }
+
+    // - CodLinha
+    temp = strsep(&ptr, ",");
+    registro.codLinha = atoi(temp);
+
+    // - Nome Linha
+    temp = strsep(&ptr, ",");
+    registro.nomeLinha = malloc(strlen(temp)+1); // faz leitura, coloca em temp e ve o tamanho e aloca o tamanho+1
+    registro.tamNomeLinha = strlen(temp); // pega tamanho do nome da linha
+    temp[strcspn(temp, "\n")] = '\0'; // lipeza buffer copy
+    strcpy(registro.nomeLinha, temp); // copia a informação obtida na var do registro
+
+
+    // - Cod Prox Estac
+    temp = strsep(&ptr, ",");
+    if(temp == NULL || strlen(temp) == 0){
+      registro.codProxEstacao = -1;
+    } else {
+      registro.codProxEstacao = atoi(temp); 
+      cod_proxEs[i] = registro.codProxEstacao;
+    };
+
+    // Dist Proxi Estac
+    temp = strsep(&ptr, ",");
+    registro.distProxEstacao = atoi(temp);
+
+    // Cod Linha Inte
+    temp = strsep(&ptr, ",");
+    if (temp == NULL || strlen(temp) == 0){
+      registro.codLinhaIntegra = -1;
+    }
+    else{
+      registro.codLinhaIntegra = atoi(temp);
+    };
+
+    // Cod Est Integra
+    temp = strsep(&ptr, ",");
+    if (temp == NULL || strlen(temp) == 0){
+      registro.codEstIntegra = -1;
+    }
+    else {
+      registro.codEstIntegra = atoi(temp);
+    };
+
+    registro.prox_queue = cabecalho.topo;
+
+    // Verifica pares
+    for(int k = 0; k < 150; k++){
+      for(int j = 0; j < 150; j++){
+        if(verifica_estacao[k] == cod_proxEs[j]){
+          cabecalho.nroParesEstacoes++; // Não verifiquei se tem repetidos!!!!!!
+        }
+      }
+    }
+
+    write_bin(registro, arq_bin);
 
     // Debug
-    printf("%d | %s | %d | %s | %d | %d | %d | %d\n", 
-    registro[i].codEstacao,
-    registro[i].nomeEstacao,
-    registro[i].codLinha,
-    registro[i].nomeLinha,
-    registro[i].codProxEstacao,
-    registro[i].distProxEstacao,
-    registro[i].codLinhaIntegra,
-    registro[i].codEstIntegra);
+    // printf("RemV | ProxRRN | CodEstacao | CodLinha | CodProxEsta | DistProxEsta | CodLinhaInt | CodEstaInt |TamNomeEsta |NomeEsta | TamNomeLin | NomeLin |\n");
+    // printf("%s | %d | %d | %d | %d | %d |%d | %d | %d | %s | %d | %s\n",
+    // registro.status_removido, // %c
+    // registro.prox_queue, // %d
+    // registro.codEstacao, // %d
+    // registro.codLinha, // %d
+    // registro.codProxEstacao, // %d
+    // registro.distProxEstacao, // %d
+    // registro.codLinhaIntegra, // %d
+    // registro.codEstIntegra, // %d
+    // registro.tamNomeEstacao, // %d
+    // registro.nomeEstacao, // %s
+    // registro.tamNomeLinha, // %d
+    // registro.nomeLinha // %s
+    // );
+
+    // Preciso verificar o tamanho de cada registro de tamanho variado e oque sobrar eu completo com $, tenho que verificar aquilo de cocatenar se o campo for grande e tals
     
     i++;
+    free(registro.nomeEstacao);
+    free(registro.nomeLinha);
   }
-  // fclose("estacoes.csv"); // fechamos o CSV
-
-
-  // Fazer loop para leitura até o fim do arquivo
-  // Dentro dele tem que fazer um loop para rodar por linha para anotar cada campo por registro
-  // a,,c podemos usar para verificar esses vazios com RTSTOK???
-
-
-  // fclose("estacoes.csv"); // Fecha arquivo
+  fclose(estacoes); // fechamos o CSV
 }
 
 // escrever em um arquivo binário da forma esperada (atualizar o RRN do status)
+
+void write_bin(reg_dados dados, reg_cabecalho header, char arq_bin[256]){ // arquivo binário, para escrever
+  FILE *binario = fopen(arq_bin, "wb"); // Cria/Reescreve o arq binario
+
+  
+  fwrite(&header.status, 1, 1, binario);
+  fwrite(&header.topo, sizeof(int), 1, binario);
+  fwrite(&header.proxRRN, sizeof(int), 1, binario);
+  fwrite(&header.nroEstacoes, sizeof(int), 1, binario);
+  fwrite(&header.nroParesEstacoes, sizeof(int), 1, binario);
+
+  //fwrite(buffer ,            sizeof,numero, ponteiro); - escrita 
+  fwrite(&dados.status_removido, 1, 1, binario); 
+  fwrite(&dados.prox_queue, sizeof(int), 1, binario);  // 4 bytes e 1 elemento a ser lido 
+  fwrite(&dados.codEstacao, sizeof(int), 1, binario); 
+  fwrite(&dados.codLinha, sizeof(int), 1, binario); 
+  fwrite(&dados.codProxEstacao, sizeof(int), 1, binario); 
+  fwrite(&dados.distProxEstacao, sizeof(int), 1, binario); 
+  fwrite(&dados.codLinhaIntegra, sizeof(int), 1, binario); 
+  fwrite(&dados.codEstIntegra, sizeof(int), 1, binario); 
+
+  fwrite(&dados.tamNomeEstacao, sizeof(int), 1, binario); 
+  fwrite(&dados.nomeEstacao, dados.tamNomeEstacao, 1, binario);
+
+  fwrite(&dados.tamNomeLinha, sizeof(int), 1, binario);  
+  fwrite(&dados.nomeLinha, dados.tamNomeLinha, 1, binario); 
+
+  // Verificação de tamanho com base no tamanho do nome
+  int tamanho_variados = 37 + dados.tamNomeEstacao + dados.tamNomeLinha; // 37 bytes fixos + bytes variados pois vetores de char são 1 byte cada caracter
+  int lixo = 80 - tamanho_variados; // lixo para ser completado com $
+
+  for(int i = 0; i < lixo; i++){
+    char caracter_lixo = "$";
+    fwrite(&caracter_lixo, 1, 1, binario); // Printa os lixos
+  }
+
+  fclose(binario);
+}
+
+// Preciso escrever o cabeçalho no topo
+// Verificar se removi o \0 antes de por no
+// termina codigo
+// Verifica um pouco comparando com o outro bin
+// Adicionar numero estacoes
+// numeros pares de estações
+
+// nroEstacoes : Indica a quantidade de estações diferentes que são armazenadas no arquivo de dado. Note que se houver 2 ou mais estações com mesmo nome elas são as mesmas (Tamanho : inteiro = 4 bytes!)
+// nroParesEstacoes : Indica a quantidade de pares (codEstacao, codProxEstacao) diferentes que estão armazenadas nos arquivos de dados. (Tamanho : inteiro = 4 bytes!) ❓
