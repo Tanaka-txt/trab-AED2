@@ -33,7 +33,7 @@ typedef struct registro_cabecalho {
 
 // struct para estrura de dados 80 bytes MAX
 typedef struct registro_dados {
-  char status_removido[1]; // status se foi removido 0 ou 1  ===== 1 bytes
+  char status_removido[0]; // status se foi removido 0 ou 1  ===== 1 bytes
   int prox_queue; // proximo RRN da fila                     ===== 4 bytes
   int codEstacao; //                                         ===== 4 bytes
   int codLinha;//                                            ===== 4 bytes
@@ -91,7 +91,7 @@ void read_csv(){
   while (fgets(linha, 256, estacoes)) { // faz o loop para leitura das linhas do csv
     char *ptr = linha;
 
-    registro[i].status_removido[1] = 0; // status removido 0-não /1-sim (status de todo o registro quando é "inicializado")
+    registro[i].status_removido[0] = '0'; // status removido 0-não /1-sim (status de todo o registro quando é "inicializado")
 
     registro[i].codEstacao = atoi(strsep(&ptr, ","));
     registro[i].nomeEstacao = strsep(&ptr,",");
@@ -128,7 +128,7 @@ void read_csv(){
     
     i++;
   }
-  fclose("estacoes.csv"); // fechamos o CSV
+  // fclose("estacoes.csv"); // fechamos o CSV
 
 
   // Fazer loop para leitura até o fim do arquivo
