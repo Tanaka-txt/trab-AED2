@@ -59,7 +59,6 @@ void read_bin(char arq_bin[256]){
             // criar as variáveis para o bloco com os campos fixos --> cada uma ocupa 4 bytes
             int codEstacao, codLinha, codProxEstacao, distProxEstacao, codLinhaIntegra, codEstIntegra; 
 
-
             // leitura campo a campo, na ordem que aparece no arquivo --> 6 inteiros de 4 bytes
             fread(&codEstacao, sizeof(int), 1, teste);
             fread(&codLinha, sizeof(int), 1, teste);

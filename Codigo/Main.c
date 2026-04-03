@@ -23,7 +23,7 @@ int main() {
           // Ler nome do arquivo binário
           scanf("%s", arq_bin);
           void read_bin(arq_bin);
-          printf("2\n");
+          // printf("2\n");
           break;
         case 3 :
           /*Função*/
