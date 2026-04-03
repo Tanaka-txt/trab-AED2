@@ -13,15 +13,16 @@ int main() {
           // printf("1\n");
 
           // Verificamos se a entrada é diferente de vazio
-          scanf(" %s %s", arq_csv, arq_bin);
+          scanf("%s %s", arq_csv, arq_bin);
           create_cabecalho();
           read_csv(arq_csv, arq_bin);
-
           // BinarioNaTela("estacoes.bin"); teste para ver 
           break;
         case 2 :
           /*Função*/
           // Ler nome do arquivo binário
+          scanf("%s", arq_bin);
+          void read_bin(arq_bin);
           printf("2\n");
           break;
         case 3 :
