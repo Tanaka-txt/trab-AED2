@@ -1,27 +1,23 @@
 #include "features.h"
 
 
-void main() {
+int main() {
   int option;
   char arq_csv[256], arq_bin[256]; // buffer do tamanho de uma linha
   do{
     scanf("%d", &option);
+    getchar(); // limpa o buffer por conta do \n
       switch (option){
         case 1 :
           /*Função*/
           // printf("1\n");
 
           // Verificamos se a entrada é diferente de vazio
-          if(fgets(arq_csv, sizeof(arq_csv), stdin) != NULL){
-            arq_csv[strcspn(arq_csv, "\n")] = '\0'; // remove /n
-          }
-          if(fgets(arq_bin, sizeof(arq_bin), stdin) != NULL){
-            arq_bin[strcspn(arq_bin, "\n")] = '\0'; // remove /n
-          }
+          scanf(" %s %s", arq_csv, arq_bin);
           create_cabecalho();
           read_csv(arq_csv, arq_bin);
 
-          // recebe nome.csv nome.bin
+          // BinarioNaTela("estacoes.bin"); teste para ver 
           break;
         case 2 :
           /*Função*/
@@ -46,4 +42,5 @@ void main() {
           exit;
       }
   } while (option != 0);
+  return 1;
 }
