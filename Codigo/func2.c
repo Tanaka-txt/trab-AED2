@@ -26,7 +26,7 @@
 
 #include "features.h"
 
-void read_bin(char arq_bin[256]){
+void read_bin(char *arq_bin){
     FILE *teste = fopen(arq_bin, "rb"); // rb --> read binary
     if (teste == NULL) { // Verifica se foi possível ler o arquivo binário
         printf("Falha no processamento do arquivo.\n");
@@ -131,7 +131,7 @@ void read_bin(char arq_bin[256]){
             }
 
             if (registro.codEstIntegra == -1){
-                printf("NULO ");
+                printf("NULO\n");
             }else {
                 printf("%d\n", registro.codEstIntegra);
             }

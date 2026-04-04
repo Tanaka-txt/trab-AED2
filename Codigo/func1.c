@@ -60,7 +60,7 @@ void read_csv(char arq_csv[256], char arq_bin[256]){
   FILE *binario = fopen(arq_bin, "wb+"); // cria do zero o arquivo e permite usar o fseek!
 
   if (csv == NULL || binario == NULL) { // Verifica se foi possível abrir arquivo
-    printf("Erro na abertura");
+    printf("Falha no processamento do arquivo.");
     return;
   }
 

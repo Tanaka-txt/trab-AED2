@@ -4,8 +4,8 @@
 int main() {
   int option;
   char arq_csv[256], arq_bin[256]; // buffer do tamanho de uma linha
-  do{
-    scanf("%d", &option);
+
+  while(scanf("%d", &option) == 1) {
     getchar(); // limpa o buffer por conta do \n
       switch (option){
         case 1 :
@@ -18,30 +18,34 @@ int main() {
           read_csv(arq_csv, arq_bin);
           // BinarioNaTela("estacoes.bin"); teste para ver 
           break;
+
         case 2 :
           /*Função*/
           // Ler nome do arquivo binário
           scanf("%s", arq_bin);
-          void read_bin(arq_bin);
+          read_bin(arq_bin);
           // printf("2\n");
           break;
+
         case 3 :
           /*Função*/
           printf("3\n");
           break;
+
         case 4 :
           /*Função*/
           printf("4\n");
           break;
+
         case 0 :
           /*Exit*/
-          printf("0\n");
           break;
+
         default:
         /* Caso que não é nenhum da erro ex. -1 -2  9 */
-        printf("Erro\n");
-          exit;
+          printf("Erro\n");
+          exit(0);
       }
-  } while (option != 0);
-  return 1;
+  }
+  return 0;
 }
