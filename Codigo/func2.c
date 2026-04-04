@@ -33,6 +33,18 @@ void read_bin(char arq_bin[256]){
         return;
     }
 
+    // Utiliza struct do .h
+    reg_cabecalho cabecalho;
+    reg_dados registro;
+
+    fread(&cabecalho.status, sizeof(char), 1, teste);
+
+    if(cabecalho.status == '0'){ // verifica a consistencia do arquivo
+        printf("Falha no processamento do arquivo.\n");
+        fclose(teste);
+        return;
+    }
+
     // pular os 17 bytes de cabeçalho tem 2 formas: com tamanho fixo ou baseado no tamanho de uma struct --> fseek("nome_arquivo", 17, SEEK_SET) 
     fseek(teste, 17, SEEK_SET); // ou seja, a partir do início (SEEK_SET) pula 17 bytes que é um tamanho fixo --> movendo para a posição 18º
 
@@ -40,100 +52,93 @@ void read_bin(char arq_bin[256]){
     // consigo usar o fread para ir lendo o arquivo e o fseek pra pular 79 bytes quando o removido for 1
 
     int registroValido = 0;  // contator para verificar se um registro válido foi encontrado no arquivo
-    char removido; // variável de 1 byte 
     
     // &removido    --> endereço de salvamento da informação, 
     // sizeof(char) --> tamanho da informação a ser lida no char (1 byte)
     // 1            --> qtd de elementos a serem lidas, ou seja, 1 elemento
     // teste        --> arquivo
     // == 1         --> verifica se conseguiu ler 1 elemento (se não, é porque o arquivo acabou - retorna 0 e o loop para)
-    while (fread(&removido, sizeof(char), 1, teste) ==1){
+    while (fread(&registro.status_removido, sizeof(char), 1, teste) ==1){
     
-        if (removido == '1'){ // significa que o registro foi apagado depois de ler o 1º byte
+        if (registro.status_removido == '1'){ // significa que o registro foi apagado depois de ler o 1º byte
             fseek(teste, 79, SEEK_CUR); // como já leu o 1º pula o restante (79 bytes a partir da posição atual) indo para a próxima linha
-        
-        }else if (removido == '0'){ // significa que o registro é válido e não foi apagado, então ele precisar ler todos os bytes
+        }else if (registro.status_removido == '0'){ // significa que o registro é válido e não foi apagado, então ele precisar ler todos os bytes
             // pula mais 4 bytes pois não precisa imprimir o campo 'próximo'
             fseek(teste, 4, SEEK_CUR);
 
-            // criar as variáveis para o bloco com os campos fixos --> cada uma ocupa 4 bytes
-            int codEstacao, codLinha, codProxEstacao, distProxEstacao, codLinhaIntegra, codEstIntegra; 
-
             // leitura campo a campo, na ordem que aparece no arquivo --> 6 inteiros de 4 bytes
-            fread(&codEstacao, sizeof(int), 1, teste);
-            fread(&codLinha, sizeof(int), 1, teste);
-            fread(&codProxEstacao, sizeof(int), 1, teste);
-            fread(&distProxEstacao, sizeof(int), 1, teste);
-            fread(&codLinhaIntegra, sizeof(int), 1, teste);
-            fread(&codEstIntegra, sizeof(int), 1, teste);
+            fread(&registro.codEstacao, sizeof(int), 1, teste);
+            fread(&registro.codLinha, sizeof(int), 1, teste);
+            fread(&registro.codProxEstacao, sizeof(int), 1, teste);
+            fread(&registro.distProxEstacao, sizeof(int), 1, teste);
+            fread(&registro.codLinhaIntegra, sizeof(int), 1, teste);
+            fread(&registro.codEstIntegra, sizeof(int), 1, teste);
 
 
             // criar as variáveis para o bloco com os campos variáveis
-            int tamNomeEstacao;
-            fread(&tamNomeEstacao, sizeof(int), 1, teste);
+            fread(&registro.tamNomeEstacao, sizeof(int), 1, teste);
 
-            char nomeEstacao[tamNomeEstacao + 1]; // +1 por conta do '\0'
-            if (tamNomeEstacao > 0){ // lê as letras de uma vez só se for maior que 0
-                fread(nomeEstacao, sizeof(char), tamNomeEstacao, teste);    
+            char nomeEstacao[registro.tamNomeEstacao + 1]; // +1 por conta do '\0'
+            if (registro.tamNomeEstacao > 0){ // lê as letras de uma vez só se for maior que 0
+                fread(nomeEstacao, sizeof(char), registro.tamNomeEstacao, teste);    
             }
-            // nomeEstacao[tamNomeEstacao] = '\0'; // como se fosse um pare para a leitura --> isso é necessário?
+            nomeEstacao[registro.tamNomeEstacao] = '\0'; // como se fosse um pare para a leitura --> isso é necessário?
 
 
-            int tamNomeLinha;
-            fread(&tamNomeLinha, sizeof(int), 1, teste);
+            fread(&registro.tamNomeLinha, sizeof(int), 1, teste);
 
-            char nomeLinha[tamNomeLinha + 1]; // +1 por conta do '\0'
-            if (tamNomeLinha > 0){ // lê as letras de uma vez só se for maior que 0
-                fread(nomeLinha, sizeof(char), tamNomeLinha, teste); 
+            char nomeLinha[registro.tamNomeLinha + 1]; // +1 por conta do '\0'
+            if (registro.tamNomeLinha > 0){ // lê as letras de uma vez só se for maior que 0
+                fread(nomeLinha, sizeof(char), registro.tamNomeLinha, teste); 
             }
-            // nomeEstacao[tamNomeEstacao] = '\0'; // como se fosse um pare para a leitura --> isso é necessário?
+            nomeLinha[registro.tamNomeLinha] = '\0'; // como se fosse um pare para a leitura --> isso é necessário?
 
             registroValido++; // se o programa encontrar uma estação que não foi apagada ele soma 1 no número de registro válido
 
-            printf("%d %s ", codEstacao, nomeEstacao); // nunca vão ser nulas, por isso não precisa de verificação
+            printf("%d %s ", registro.codEstacao, nomeEstacao); // nunca vão ser nulas, por isso não precisa de verificação
 
             // campos fixos que tiverem o valor nulo, em vez de ser -1 tem q printar NULO
             // campos variáveis que tiverem o valor nulo, devem printar NULO
 
-            if (codLinha == -1) {
+            if (registro.codLinha == -1) {
                 printf("NULO ");
             } else{
-                printf("%d ", codLinha);
+                printf("%d ", registro.codLinha);
             }
 
-            if (tamNomeLinha == 0){
+            if (registro.tamNomeLinha == 0){
                 printf("NULO ");
             }else {
                 printf("%s ", nomeLinha);
             }
 
-            if (codProxEstacao == -1){
+            if (registro.codProxEstacao == -1){
                 printf("NULO ");
             }else {
-                printf("%d ", codProxEstacao);
+                printf("%d ", registro.codProxEstacao);
             }
 
-            if (distProxEstacao == -1){
+            if (registro.distProxEstacao == -1){
                 printf("NULO ");
             }else {
-                printf("%d ", distProxEstacao);
+                printf("%d ", registro.distProxEstacao);
             }
 
-            if (codLinhaIntegra == -1){
+            if (registro.codLinhaIntegra == -1){
                 printf("NULO ");
             }else {
-                printf("%d ", codLinhaIntegra);
+                printf("%d ", registro.codLinhaIntegra);
             }
 
-            if (codEstIntegra == -1){
+            if (registro.codEstIntegra == -1){
                 printf("NULO ");
             }else {
-                printf("%d\n", codEstIntegra);
+                printf("%d\n", registro.codEstIntegra);
             }
 
             // somando apenas os bytes fixos: 1 do removido, 4 do próximo, 24 do bloco fico, 4 do tamNomeEstacao e 4 tamNomeLinha = 37 bytes
             // dos 80 bytes, 37 são fixos e temos a quant. de letras da estação e linha, o resto é o lixo de memória ($) que vai ser pulado
-            int bytesrestantes = 80 - 37 - tamNomeEstacao - tamNomeLinha;
+            int bytesrestantes = 80 - 37 - registro.tamNomeEstacao - registro.tamNomeLinha;
             fseek(teste, bytesrestantes, SEEK_CUR); // fseek(arquivo, tamanho_do_pulo_em_bytes_do_lixo, a_partir_da_posição_atual_do_cursor)
         }
     }
