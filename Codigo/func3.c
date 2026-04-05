@@ -15,6 +15,7 @@
 
 
 #include "features.h"
+
 // com esse "painel", o usuário digita o que ele quer, o programa vai ler a palavra e mudar de 0 para 1 no que vai ser buscado
 typedef struct {
     int busca_codEstacao;       int valor_codEstacao;
@@ -87,118 +88,50 @@ void busca_bin(char *arq_bin){
             */           
         }    
         
-               
-        // ----------- FUNCIONALIDADE 2 -----------
         fseek(teste, 17, SEEK_SET); // pula o cabeçalho para iniciar a leitura
         
         int registroValido = 0; // contador para ver quantas buscas deram certo 
         reg_dados registro;     // struct que guarda o que acabou de ser lido
-    
-        while (fread(&registro.status_removido, sizeof(char), 1, teste) == 1){
+        int status_leitura;     // variável para ser ajudante de leitura da função ler_registro
+
+        while (1){
         
-            if (registro.status_removido == '1'){ 
-                fseek(teste, 79, SEEK_CUR);
+            status_leitura = ler_registro(teste, &registro); // chamar o ajudante de leitura passando o endereço da struct
 
-            }else if (registro.status_removido == '0'){ 
-                
-                fseek(teste, 4, SEEK_CUR); // pula Próximo RRN
-
-                fread(&registro.codEstacao, sizeof(int), 1, teste);
-                fread(&registro.codLinha, sizeof(int), 1, teste);
-                fread(&registro.codProxEstacao, sizeof(int), 1, teste);
-                fread(&registro.distProxEstacao, sizeof(int), 1, teste);
-                fread(&registro.codLinhaIntegra, sizeof(int), 1, teste);
-                fread(&registro.codEstIntegra, sizeof(int), 1, teste);
-
-                // ------- 👀
-                fread(&registro.tamNomeEstacao, sizeof(int), 1, teste);
-                if (registro.tamNomeEstacao > 0) { 
-                    registro.nomeEstacao = malloc(registro.tamNomeEstacao + 1); 
-                    fread(registro.nomeEstacao, sizeof(char), registro.tamNomeEstacao, teste);    
-                    registro.nomeEstacao[registro.tamNomeEstacao] = '\0'; 
-                }
-
-                fread(&registro.tamNomeLinha, sizeof(int), 1, teste);
-                if (registro.tamNomeLinha > 0) { 
-                    registro.nomeLinha = malloc(registro.tamNomeLinha + 1); 
-                    fread(registro.nomeLinha, sizeof(char), registro.tamNomeLinha, teste); 
-                    registro.nomeLinha[registro.tamNomeLinha] = '\0'; 
-                }
-                // ------- 👀
-                // -----------||----------||-----------
-                
-
-                int pontos = 0; // registro lido começa com zero no filtro
-
-                if (painel.busca_codEstacao == 1 && registro.codEstacao == painel.valor_codEstacao) pontos ++; // se o filtro do campo for "ligado" E o valor do registro bater com o exigido, ganha 1 ponto.
-                if (painel.busca_codLinha == 1 && registro.codLinha == painel.valor_codLinha) pontos ++;
-                if (painel.busca_codProxEstacao == 1 && registro.codProxEstacao == painel.valor_codProxEstacao) pontos ++;
-                if (painel.busca_distProxEstacao == 1 && registro.distProxEstacao == painel.valor_distProxEstacao) pontos ++;
-                if (painel.busca_codLinhaIntegra == 1 && registro.codLinhaIntegra == painel.valor_codLinhaIntegra) pontos ++;
-                if (painel.busca_codEstIntegra == 1 && registro.codEstIntegra == painel.valor_codEstIntegra) pontos ++;
-
-                // para os textos, é preciso usar strcmp para realizar a comparação
-                if (painel.busca_nomeEstacao == 1 && strcmp (registro.nomeEstacao, painel.valor_nomeEstacao) == 0) pontos ++;
-                if (painel.busca_nomeLinha == 1 && strcmp (registro.nomeLinha, painel.valor_nomeLinha) == 0) pontos ++;
-
-                if (pontos == m){ // se a quantidade de pontos for igual ao nº de exigências vai ser um registro válido
-                    registroValido ++;
-
-                    // se o registro tiver os pontos == m, ele vai ser impresso
-                    printf("%d %s ", registro.codEstacao, registro.nomeEstacao); // nunca vão ser nulas, por isso não precisa de verificação
-
-                    // campos fixos que tiverem o valor nulo, em vez de ser -1 tem q printar NULO
-                    // campos variáveis que tiverem o valor nulo, devem printar NULO
-
-                    if (registro.codLinha == -1) {
-                        printf("NULO ");
-                    } else{
-                        printf("%d ", registro.codLinha);
-                    }
-
-                    if (registro.tamNomeLinha == 0){
-                        printf("NULO ");
-                    }else {
-                        printf("%s ", registro.nomeLinha);
-                    }
-
-                    if (registro.codProxEstacao == -1){
-                        printf("NULO ");
-                    }else {
-                        printf("%d ", registro.codProxEstacao);
-                    }
-
-                    if (registro.distProxEstacao == -1){
-                        printf("NULO ");
-                    }else {
-                        printf("%d ", registro.distProxEstacao);
-                    }
-
-                    if (registro.codLinhaIntegra == -1){
-                        printf("NULO ");
-                    }else {
-                        printf("%d ", registro.codLinhaIntegra);
-                    }
-
-                    if (registro.codEstIntegra == -1){
-                        printf("NULO\n");
-                    }else {
-                        printf("%d\n", registro.codEstIntegra);
-                    }
-                
-                }         
-            
-                int bytesrestantes = 80 - 37 - registro.tamNomeEstacao - registro.tamNomeLinha;
-                fseek(teste, bytesrestantes, SEEK_CUR); // fseek(arquivo, tamanho_do_pulo_em_bytes_do_lixo, a_partir_da_posição_atual_do_cursor)
-                
-                // limpando a memória dos mallocs antes que o while rode novamente
-                if (registro.tamNomeEstacao > 0) free(registro.nomeEstacao);
-                if (registro.tamNomeLinha > 0) free(registro.nomeLinha);
-
-                }
+            if (status_leitura == 0){ // arquivo acabou e sai do laço while
+                break;
             }
-            if (registroValido == 0){ // se não tiver nenhum registro válido, ou seja, todas as estações foram removidas
-                printf("Registro inexistente.\n");
+            if (status_leitura == 2){ // registro apagado, volta para o início do laço
+                continue;
+            }
+
+            int pontos = 0; // registro lido começa com zero no filtro
+
+            if (painel.busca_codEstacao == 1 && registro.codEstacao == painel.valor_codEstacao) pontos ++; // se o filtro do campo for "ligado" E o valor do registro bater com o exigido, ganha 1 ponto.
+            if (painel.busca_codLinha == 1 && registro.codLinha == painel.valor_codLinha) pontos ++;
+            if (painel.busca_codProxEstacao == 1 && registro.codProxEstacao == painel.valor_codProxEstacao) pontos ++;
+            if (painel.busca_distProxEstacao == 1 && registro.distProxEstacao == painel.valor_distProxEstacao) pontos ++;
+            if (painel.busca_codLinhaIntegra == 1 && registro.codLinhaIntegra == painel.valor_codLinhaIntegra) pontos ++;
+            if (painel.busca_codEstIntegra == 1 && registro.codEstIntegra == painel.valor_codEstIntegra) pontos ++;
+
+            // para os textos, é preciso usar strcmp para realizar a comparação
+            if (painel.busca_nomeEstacao == 1 && strcmp (registro.nomeEstacao, painel.valor_nomeEstacao) == 0) pontos ++;
+            if (painel.busca_nomeLinha == 1 && strcmp (registro.nomeLinha, painel.valor_nomeLinha) == 0) pontos ++;
+
+            if (pontos == m){ // se a quantidade de pontos for igual ao nº de exigências vai ser um registro válido
+                registroValido ++;
+
+                imprimir_registro(&registro);
+            }
+                
+            // limpando a memória dos mallocs antes que o while rode novamente
+            if (registro.tamNomeEstacao > 0) free(registro.nomeEstacao);
+            if (registro.tamNomeLinha > 0) free(registro.nomeLinha);
+
+        }
+        if (registroValido == 0){ // se não tiver nenhum registro válido, ou seja, todas as estações foram removidas
+            printf("Registro inexistente.\n");
+        
         }  
     }
     fclose(teste);
