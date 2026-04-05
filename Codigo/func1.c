@@ -5,8 +5,8 @@
 
 // Pares Estações
 typedef struct {
-    int EstacaoA;
-    int EstacaoB;
+    int origem;
+    int destino;
 } Par;
 
 
@@ -48,7 +48,7 @@ int existe_estacao(char *nome, char **lista, int tamanho){ // função de busca!
 //Pares Estações 👀
 int existe_par(int a, int b, Par *lista, int tamanho){ //👀
   for(int i = 0; i < tamanho; i++){ // 👀
-    if(lista[i].EstacaoA == a && lista[i].EstacaoB == b) // 👀
+    if(lista[i].origem == a && lista[i].destino == b) // 👀
         return 1; // 👀
   }
     return 0; // 👀
@@ -173,8 +173,8 @@ void read_csv(char arq_csv[256], char arq_bin[256]){
     // Pares Estações👀
     if (registro.codProxEstacao != -1 && !existe_par(registro.codEstacao, registro.codProxEstacao, pares, total_pares)) { 
         pares = realloc(pares, (total_pares + 1) * sizeof(Par)); // Aqui é para realocar espaço para os nomes das estações👀
-        pares[total_pares].EstacaoA = registro.codEstacao; // Aqui fica as CodEstação que está escrevendo qual é seu par👀
-        pares[total_pares].EstacaoB = registro.codProxEstacao; // Aqui fica os códigos das estações pares👀
+        pares[total_pares].origem = registro.codEstacao; // Aqui fica as CodEstação que está escrevendo qual é seu par👀
+        pares[total_pares].destino = registro.codProxEstacao; // Aqui fica os códigos das estações pares👀
         total_pares++;
     }
     cabecalho.nroParesEstacoes = total_pares;
