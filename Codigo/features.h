@@ -48,6 +48,11 @@ void create_cabecalho();
 // Func2- 
 void read_bin(char *arq_bin);
 
+// Func3-
+int ler_registro(FILE *binario, reg_dados *registro);
+void imprimir_registro(reg_dados *registro);
+void busca_bin(char *arq_bin);
+
 // Fornecidas
 void BinarioNaTela(char *arquivo);
 void ScanQuoteString(char *str);

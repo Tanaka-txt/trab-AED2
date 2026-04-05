@@ -28,8 +28,9 @@ int main() {
           break;
 
         case 3 :
-          /*Função*/
-          printf("3\n");
+          // Ler nome do arquivo binário e buscar
+          scanf("%s", arq_bin);
+          busca_bin(arq_bin);
           break;
 
         case 4 :
