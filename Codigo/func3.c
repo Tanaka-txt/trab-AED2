@@ -45,13 +45,23 @@ void busca_bin(char *arq_bin){
         scanf("%d", &m); // quantidade de filtros a serem buscados
 
         for (int j = 0; j < m; j++){ // laço para ler o que o usuário digitou que depois vai ser buscado
-            char palavra [30];   // declaro uma variável que vai receber a palavra que vai ser buscada
-            scanf("%s", palavra);
+            char palavra [30];       // declarar uma variável que vai receber o campo que vai ser buscada
+            char aux[50];            // vai ler o valor, seja ele número ou texto
+            
+            scanf("%s", palavra);    // lê o campo que o usuário quer buscar
 
             // strcmp vai comparar as strings e ver se são iguais ou não
+            
             if (strcmp(palavra, "codEstacao") == 0) {
                 painel.busca_codEstacao = 1; // significa que o usuário quer pesquisar isso
-                scanf("%d", &painel.valor_codEstacao); // guarda o valor que ele quer buscar
+                
+                scanf("%s", aux); // lê o valor como texto
+                // verificar o que tem dentro de aux --> texto ou inteiro
+                if (strcmp(aux, "NULO") == 0) { // se o texto for "NULO", o valor vira -1
+                    painel.valor_codEstacao = -1;
+                } else { // se não for "NULO" significa que é um número
+                    painel.valor_codEstacao = atoi(aux); // a função atoi() pega o texto e converte em número inteiro
+                }
 
             } else if (strcmp(palavra, "nomeEstacao") == 0) {
                 painel.busca_nomeEstacao = 1;
@@ -59,7 +69,9 @@ void busca_bin(char *arq_bin){
 
             } else if (strcmp(palavra, "codLinha") == 0) {
                 painel.busca_codLinha = 1;
-                scanf("%d", &painel.valor_codLinha);
+                scanf("%s", aux);
+                if (strcmp(aux, "NULO") == 0) painel.valor_codLinha = -1;
+                else painel.valor_codLinha = atoi(aux);
 
             } else if (strcmp(palavra, "nomeLinha") == 0) {
                 painel.busca_nomeLinha = 1;
@@ -67,25 +79,36 @@ void busca_bin(char *arq_bin){
 
             } else if (strcmp(palavra, "codProxEstacao") == 0) {
                 painel.busca_codProxEstacao = 1;
-                scanf("%d", &painel.valor_codProxEstacao);
+                scanf("%s", aux);
+                if (strcmp(aux, "NULO") == 0) painel.valor_codProxEstacao = -1;
+                else painel.valor_codProxEstacao = atoi(aux);
 
             } else if (strcmp(palavra, "distProxEstacao") == 0) {
                 painel.busca_distProxEstacao = 1;
-                scanf("%d", &painel.valor_distProxEstacao);
+                scanf("%s", aux);
+                if (strcmp(aux, "NULO") == 0) painel.valor_distProxEstacao = -1;
+                else painel.valor_distProxEstacao = atoi(aux);
 
             } else if (strcmp(palavra, "codLinhaIntegra") == 0) {
                 painel.busca_codLinhaIntegra = 1;
-                scanf("%d", &painel.valor_codLinhaIntegra);
+                scanf("%s", aux);
+                if (strcmp(aux, "NULO") == 0) painel.valor_codLinhaIntegra = -1;
+                else painel.valor_codLinhaIntegra = atoi(aux);
 
             } else if (strcmp(palavra, "codEstIntegra") == 0) {
                 painel.busca_codEstIntegra = 1;
-                scanf("%d", &painel.valor_codEstIntegra);
+                scanf("%s", aux);
+                if (strcmp(aux, "NULO") == 0) painel.valor_codEstIntegra = -1;
+                else painel.valor_codEstIntegra = atoi(aux);
             }
-            // quando esse laço for finalizado, vamos saber o que o usuário quer buscar
+            // quando esse laço for finalizado, vamos saber o que o usuário quer buscar          
             /* IDEIA DO LAÇO:   
-                    lê os 'm' filtros que o usuário deseja aplicar na busca e o scanf funciona em duas etapas: 
-                    1º - identifica a palavara (ex: "codLinha") e 2º - ativa a busca desse campo (= 1) e lê o valor desejado logo em seguida.
-            */           
+               Lê os 'm' filtros que o usuário deseja aplicar na busca. O processo de leitura funciona assim: 
+               1º - Identifica qual é o campo buscado (ex: "codLinha").
+               2º - Ativa a busca desse campo (setando = 1 no painel).
+               3º - Lê o valor desejado. Para os campos numéricos, a leitura é feita primeiro como texto (na variável 'aux'). 
+                    Isso impede que a palavra "NULO" quebre o scanf, permitindo a conversão segura para inteiro (usando atoi) logo em seguida.
+            */
         }    
         
         fseek(teste, 17, SEEK_SET); // pula o cabeçalho para iniciar a leitura
@@ -131,8 +154,12 @@ void busca_bin(char *arq_bin){
         }
         if (registroValido == 0){ // se não tiver nenhum registro válido, ou seja, todas as estações foram removidas
             printf("Registro inexistente.\n");
-        
         }  
+
+        if (i < n - 1){
+            printf("\n"); // se a busca que acabou de rodar não for a última, imprime uma linha em branco
+        }
+        
     }
     fclose(teste);
 }

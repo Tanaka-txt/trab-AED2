@@ -22,7 +22,7 @@ typedef struct registro_cabecalho {
 
 // struct para estrura de dados 80 bytes MAX
 typedef struct registro_dados {
-  char status_removido; // status se foi removido 0 ou 1  ===== 1 bytes
+  char status_removido; // status se foi removido 0 ou 1     ===== 1 bytes
   int prox_queue; // proximo RRN da fila                     ===== 4 bytes
   int codEstacao; //                                         ===== 4 bytes
   int codLinha;//                                            ===== 4 bytes
