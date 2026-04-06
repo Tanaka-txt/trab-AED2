@@ -1,4 +1,7 @@
 #include "features.h"
+#include "impressao.h"
+#include "leitura.h"
+#include "registro.h"
 
 // Recebemos de entrada um 
 // 4 arquivo.bin RRN

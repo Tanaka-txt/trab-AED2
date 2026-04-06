@@ -12,6 +12,8 @@
 
 #include "features.h"
 #include "impressao.h"
+#include "leitura.h"
+#include "registro.h"
 
 void read_bin(char *arq_bin){
     

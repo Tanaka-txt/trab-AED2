@@ -1,4 +1,5 @@
 #include "features.h"
+#include "registro.h"
 
 int ler_registro(FILE *binario, reg_dados *registro){ // como 'registro' foi recebido como ponteiro (*), foi usado a seta '->' para acessar os campos na struct original
     // & indica o endereço de memória onde o fread deve salvar o dado lido
@@ -10,7 +11,7 @@ int ler_registro(FILE *binario, reg_dados *registro){ // como 'registro' foi rec
     if(registro->status_removido == '1'){ // significa que o registro foi apagado depois de ler o 1º byte e a linha será pulada
         fseek(binario, 79, SEEK_CUR);     // como já leu o 1º pula o restante (79 bytes a partir da posição atual) indo para a próxima linha
     }
-
+    
     fseek(binario, 4, SEEK_CUR); // pula os 4 bytes do campo "próximo" (RRN do próximo registro removido)
 
     // leitura campo a campo, na ordem que aparece no arquivo --> 6 inteiros de 4 bytes
@@ -48,3 +49,76 @@ int ler_registro(FILE *binario, reg_dados *registro){ // como 'registro' foi rec
     a fread recebe apenas um ponteiro (*), então a seta acessa a memória da struct que está guardada em outro lugar
     o'&' passa esse endereço exato para o fread
 */
+
+// ========================================================================
+
+void le_linha_csv(char *linha, reg_dados *registro, int topo) {
+    char *ptr = linha;
+    char *temp;
+
+    registro->status_removido = '0'; // status inicial
+    registro->prox_queue = topo;
+
+    // - CodEstação
+    temp = strsep(&ptr, ",");
+    if (temp != NULL && strlen(temp) > 0) {
+        registro->codEstacao = atoi(temp);
+    }
+
+    // - Nome estação
+    temp = strsep(&ptr, ",");
+    registro->nomeEstacao = malloc(strlen(temp) + 1); 
+    temp[strcspn(temp, "\r\n")] = '\0'; 
+    strcpy(registro->nomeEstacao, temp); 
+    registro->tamNomeEstacao = strlen(temp);
+
+    // - CodLinha
+    temp = strsep(&ptr, ",");
+    if(temp == NULL || strlen(temp) == 0) {
+        registro->codLinha = -1;
+    } else {
+        registro->codLinha = atoi(temp);
+    }
+
+    // - Nome Linha
+    temp = strsep(&ptr, ",");
+    registro->nomeLinha = malloc(strlen(temp) + 1); 
+    temp[strcspn(temp, "\r\n")] = '\0'; 
+    strcpy(registro->nomeLinha, temp); 
+    registro->tamNomeLinha = strlen(temp); 
+
+    // - Cod Prox Estac
+    temp = strsep(&ptr, ",");
+    if(temp == NULL || strlen(temp) == 0) {
+        registro->codProxEstacao = -1;
+    } else {
+        registro->codProxEstacao = atoi(temp); 
+    }
+
+    // - Dist Proxi Estac
+    temp = strsep(&ptr, ",");
+    if(temp == NULL || strlen(temp) == 0) {
+        registro->distProxEstacao = -1;
+    } else {
+        registro->distProxEstacao = atoi(temp);
+    }
+
+    // - Cod Linha Inte
+    temp = strsep(&ptr, ",");
+    if (temp == NULL || strlen(temp) == 0) {
+        registro->codLinhaIntegra = -1;
+    } else {
+        registro->codLinhaIntegra = atoi(temp);
+    }
+
+    // - Cod Est Integra
+    temp = strsep(&ptr, ",");
+    if (temp != NULL) {
+        temp[strcspn(temp, "\r\n")] = '\0'; 
+    }
+    if (temp == NULL || strlen(temp) == 0) { 
+        registro->codEstIntegra = -1;
+    } else {
+        registro->codEstIntegra = atoi(temp);
+    }
+}

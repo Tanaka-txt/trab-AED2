@@ -16,6 +16,9 @@ Lê os 'm' filtros que o usuário deseja aplicar na busca. O processo de leitura
 
 #include "features.h"
 #include "impressao.h"
+#include "leitura.h"
+#include "fornecidas.h"
+#include "registro.h"
 
 // com esse "painel", o usuário digita o que ele quer, o programa lê a palavra e mudar a flag (busca_X) de 0 para 1 para indicar que aquele campo será filtrado
 // a struct agrupa as flags (se busca ou não) e os valores buscados (critério)
