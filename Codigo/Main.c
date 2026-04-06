@@ -37,7 +37,7 @@ int main() {
           /*Função*/
           // printf("4\n");
           scanf("%s %d", arq_bin, &RRN);
-          func4(arq_bin, RRN);
+          busca_por_rrn(arq_bin, RRN);
           break;
 
         case 0 :

@@ -16,7 +16,7 @@
 // Qualquer erro deve exibir "falha no processamento do arquivo"
 
 
-int func4(char *arquivo, int posi_relativa){
+int busca_por_rrn(char *arquivo, int posi_relativa){
   FILE* arq_bin = fopen(arquivo, "rb"); // Abre para leitura do arquivo binário
   if (arq_bin == NULL) { // Verifica se foi possível ler o arquivo binário
         printf("Falha no processamento do arquivo.\n");
