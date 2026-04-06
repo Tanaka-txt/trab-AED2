@@ -57,13 +57,13 @@ int busca_por_rrn(char *arquivo, int posi_relativa){
     // Imprime
     imprimir_registro(&registro);
 
-// Libera a memória que foi alocada pelos mallocs dentro do ler_registro 👀
-    if (registro.tamNomeEstacao > 0) { // 👀
-        free(registro.nomeEstacao); // 👀
-    } // 👀
-    if (registro.tamNomeLinha > 0) { // 👀
-        free(registro.nomeLinha); // 👀
-    } // 👀
+// Libera a memória que foi alocada pelos mallocs dentro do ler_registro
+    if (registro.tamNomeEstacao > 0) { 
+        free(registro.nomeEstacao); 
+    } 
+    if (registro.tamNomeLinha > 0) { 
+        free(registro.nomeLinha); 
+    } 
   
     cabecalho.status = '1'; // Concistente!
     fclose(arq_bin);
@@ -78,8 +78,7 @@ int busca_por_rrn(char *arquivo, int posi_relativa){
 // campos TAM FIXO com valores -1 não devem retornar -1 devem retornar NULO
 // Campos de TAM VARIADO devem exibir NULO
 
-// Ordem exibição
-//codEstacao, nomeEstacao, codLinha, nomeLinha, codProxEstacao, distProxEstacao, codLinhaInter, nomeLinhaInter, codEstacaoInter.
+// Ordem exibição: codEstacao, nomeEstacao, codLinha, nomeLinha, codProxEstacao, distProxEstacao, codLinhaInter, nomeLinhaInter, codEstacaoInter.
 
 // Se o registro já for removido exibe "Registro inexistente"
 // Qualquer erro deve exibir "falha no processamento do arquivo"

@@ -53,7 +53,7 @@ int existe_estacao(char *nome, char **lista, int tamanho){ // função de busca!
     return 0; // volta para a função que chamou
 }
 
-//Pares Estações 👀
+//Pares Estações
 int existe_par(int a, int b, Par *lista, int tamanho){ // recebe A como origem e B como destino, recebe a lista que é do tipo da struct de apoio e o tamanho d
   for(int i = 0; i < tamanho; i++){ // fazemos loop com o total de 
     if(lista[i].origem == a && lista[i].destino == b) // verifica se ja temos um representante da estação na origem e de um destino 
@@ -97,7 +97,7 @@ void create_regi_bin(char arq_csv[256], char arq_bin[256]){
         // Chama função le_linha_csv, para cada vez no loop fazer toda a leitura e registrar no registro e passa o 
         le_linha_csv(linha, &registro, cabecalho.topo);
 
-        // Verifica nroEstacoes !existe_estacao(registro.nomeEstacao, estacao, total_estacoes)👀
+        // Verifica nroEstacoes !existe_estacao(registro.nomeEstacao, estacao, total_estacoes)
         if(existe_estacao(registro.nomeEstacao, estacao, total_estacoes) == 0 ){ // Verifica primeiro se caso não existir na lista ele coloca na lista
             estacao = realloc(estacao, (total_estacoes + 1) * sizeof(char*)); // realocamos memório com o realloc, na estacao o espaço para o total de estacoes mais 1 que é o novo
             estacao[total_estacoes] = strdup(registro.nomeEstacao); // strdup usado para alocar a memório suficiente para o registro "lido" 
@@ -105,9 +105,8 @@ void create_regi_bin(char arq_csv[256], char arq_bin[256]){
         }
         cabecalho.nroEstacoes = total_estacoes; // anota o total de estaçoes no cabeçalho
 
-        // Pares Estações 👀
+        // Pares Estações 
         // Verifico se o codProxEstacao existe no registro com -1, por definição
-        // verifico 
         if(registro.codProxEstacao != -1 && existe_par(registro.codEstacao, registro.codProxEstacao, pares, total_pares) == 0){ // se recebermos um 0
             pares = realloc(pares, (total_pares + 1) * sizeof(Par));  // alocamos em pares mais um espaço no total de pares do tipo Par(struct)
             pares[total_pares].origem = registro.codEstacao;  // anotamos essa nova origem na lista de origens 
