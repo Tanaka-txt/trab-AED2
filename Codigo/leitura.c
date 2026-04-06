@@ -35,7 +35,6 @@ int ler_registro(FILE *binario, reg_dados *registro){ // como 'registro' foi rec
             fread(registro->nomeLinha, sizeof(char), registro->tamNomeLinha, binario); 
             registro->nomeLinha[registro->tamNomeLinha] = '\0'; 
         }
-    // ------- 👀
     
     // somando apenas os bytes fixos: 1 do removido, 4 do próximo, 24 do bloco fico, 4 do tamNomeEstacao e 4 tamNomeLinha = 37 bytes
     // dos 80 bytes, 37 são fixos e temos a quantidade de letras da estação e linha, o resto é o lixo de memória ($) que vai ser pulado
