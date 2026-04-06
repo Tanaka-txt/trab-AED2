@@ -10,7 +10,8 @@ int ler_registro(FILE *binario, reg_dados *registro){
 
     if(registro->status_removido == '1'){ // significa que o registro foi apagado depois de ler o 1º byte
         fseek(binario, 79, SEEK_CUR);     // como já leu o 1º pula o restante (79 bytes a partir da posição atual) indo para a próxima linha
-        return 2;                         // significa que o arquivo foi apagado e a linha será pulada
+        printf("Registro inexistente"); // 👀
+        return 2;                         // significa que o arquivo foi apagado e a linha será pulada👀
     }
 
     fseek(binario, 4, SEEK_CUR); // pula Próximo RRN

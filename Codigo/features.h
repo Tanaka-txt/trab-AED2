@@ -53,6 +53,9 @@ int ler_registro(FILE *binario, reg_dados *registro);
 void imprimir_registro(reg_dados *registro);
 void busca_bin(char *arq_bin);
 
+// Func4-
+int func4(char *arquivo, int posi_relativa);
+
 // Fornecidas
 void BinarioNaTela(char *arquivo);
 void ScanQuoteString(char *str);
