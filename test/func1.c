@@ -54,7 +54,7 @@ int existe_par(int a, int b, Par *lista, int tamanho){ //👀
     return 0; // 👀
 }
 
-void create_regi_bin(char arq_csv[256], char arq_bin[256]){
+void read_csv(char arq_csv[256], char arq_bin[256]){
   // =-=-= Abrimos o Arquivo CSV e Binário=-=-=
   FILE *csv = fopen(arq_csv, "r"); // csv cria o arquivo e se for existente ele reescreve por cima
   FILE *binario = fopen(arq_bin, "wb+"); // cria do zero o arquivo e permite usar o fseek!
