@@ -43,6 +43,3 @@ void imprimir_registro (reg_dados *registro){
         printf("%d\n", registro->codEstIntegra);
     }
 }
-
-
-

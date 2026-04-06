@@ -2,7 +2,7 @@
 
 
 int main() {
-  int option;
+  int option, RRN;
   char arq_csv[256], arq_bin[256]; // buffer do tamanho de uma linha
 
   while(scanf("%d", &option) == 1) {
@@ -35,7 +35,9 @@ int main() {
 
         case 4 :
           /*Função*/
-          printf("4\n");
+          // printf("4\n");
+          scanf("%s %d", arq_bin, &RRN);
+          func4(arq_bin, RRN);
           break;
 
         case 0 :
