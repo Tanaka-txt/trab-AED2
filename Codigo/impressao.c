@@ -50,4 +50,3 @@ void imprimir_registro (reg_dados *registro){ // recebe um ponteiro (*registro) 
         printf("%d\n", registro->codEstIntegra);
     }
 }
-
