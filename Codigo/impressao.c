@@ -5,7 +5,7 @@
 - como 'registro' é um ponteiro para a struct, foi usado o operador de seta '->' para acessar os campos internos
 */
 
-#include "features.h"
+#include "impressao.h"
 
 void imprimir_registro (reg_dados *registro){ // recebe um ponteiro (*registro) do tipo reg_dados
     

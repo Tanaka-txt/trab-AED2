@@ -11,8 +11,10 @@
 */
 
 #include "features.h"
+#include "impressao.h"
 
 void read_bin(char *arq_bin){
+    
     FILE *teste = fopen(arq_bin, "rb");                 // rb --> read binary
     if (teste == NULL) {                                // Verifica se foi possível ler o arquivo binário
         printf("Falha no processamento do arquivo.\n"); // mensagem de erro
@@ -59,6 +61,6 @@ void read_bin(char *arq_bin){
     
     if (registroValido == 0){ // se não tiver nenhum registro válido, ou seja, todas as estações foram removidas
         printf("Registro inexistente.\n"); // exibe a mensagem de erro
-
+    }
     fclose(teste); // fecha o arquivo após terminar a leitura completa
 }
