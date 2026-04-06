@@ -1,3 +1,9 @@
+/*
+Membros do grupo:
+Laysa Almeida de Oliveira - NºUSP 14588002
+Júlio César Tanaka Vergamini - NºUSP 15466276
+*/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

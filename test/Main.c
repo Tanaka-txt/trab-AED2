@@ -15,7 +15,7 @@ int main() {
           // Verificamos se a entrada é diferente de vazio
           scanf("%s %s", arq_csv, arq_bin);
           create_cabecalho();
-          read_csv(arq_csv, arq_bin);
+          create_regi_bin(arq_csv, arq_bin);
           // BinarioNaTela("estacoes.bin"); teste para ver 
           break;
 
@@ -37,7 +37,7 @@ int main() {
           /*Função*/
           // printf("4\n");
           scanf("%s %d", arq_bin, &RRN);
-          func4(arq_bin, RRN);
+          busca_por_rrn(arq_bin, RRN);
           break;
 
         case 0 :

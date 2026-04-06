@@ -1,4 +1,10 @@
 /*
+Membros do grupo:
+Laysa Almeida de Oliveira - NºUSP 14588002
+Júlio César Tanaka Vergamini - NºUSP 15466276
+*/
+
+/*
 - para cada linha válida, imprimir os dados em uma única linha no terminal, separando tudo por um espaço em branco
 - a ordem de impressão tem que ser exatamente esta: código da estação, nome da estação, código da linha, nome da linha, código da próxima estação, distância, código da integração e, por fim, a estação de integração.
 - antes do nome da estação tem um nº que indica o tamanho daquele nome --> se for 0 imprime NULO

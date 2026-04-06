@@ -1,4 +1,11 @@
 /*
+Membros do grupo:
+Laysa Almeida de Oliveira - NºUSP 14588002
+Júlio César Tanaka Vergamini - NºUSP 15466276
+*/
+
+
+/*
 - ler linha por linha do arquivo binário, sabendo o tamanho exato de cada pedaço pra não ler informação errada
 - comando 2 estacao.bin --> tentar abrir o arquivo no modo de leitura (em C rb é usado para ler binários)
 - verificar se o arquivo foi aberto ou não --> mensagem de erro

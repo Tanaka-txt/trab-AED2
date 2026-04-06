@@ -1,4 +1,10 @@
 /*
+Membros do grupo:
+Laysa Almeida de Oliveira - NºUSP 14588002
+Júlio César Tanaka Vergamini - NºUSP 15466276
+*/
+
+/*
 - realizar uma busca por critério --> abrir o arquivo, pular o cabeçalho e usar o while para ler linha por linha (80 em 80 bytes), mas com a opção de procurar por algo
 - o programa vai ler o que o usuário quer buscar (o nome do campo) e qual é o valor (o critério)
 - antes de finalizar e printar igual a func2, precisa de um if de verificação, para saber se a informação lida para comparar com o que está sendo buscado
