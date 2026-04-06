@@ -63,7 +63,7 @@ int func4(char *arquivo, int posi_relativa){
   // Imprime
   imprimir_registro(&registro);
 
-  // Libera a memória que foi alocada pelos mallocs dentro do ler_registro 👀
+// Libera a memória que foi alocada pelos mallocs dentro do ler_registro 👀
     if (registro.tamNomeEstacao > 0) { // 👀
         free(registro.nomeEstacao); // 👀
     } // 👀

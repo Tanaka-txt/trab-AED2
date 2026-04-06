@@ -60,7 +60,7 @@ void read_bin(char *arq_bin){
     // == 1         --> verifica se conseguiu ler 1 elemento (se não, é porque o arquivo acabou - retorna 0 e o loop para)
     while (fread(&registro.status_removido, sizeof(char), 1, teste) ==1){
     
-    if (registro.status_removido == '1'){ // significa que o registro foi apagado depois de ler o 1º byte
+        if (registro.status_removido == '1'){ // significa que o registro foi apagado depois de ler o 1º byte
             fseek(teste, 79, SEEK_CUR); // como já leu o 1º pula o restante (79 bytes a partir da posição atual) indo para a próxima linha
         }else if (registro.status_removido == '0'){ // significa que o registro é válido e não foi apagado, então ele precisar ler todos os bytes
             // pula mais 4 bytes pois não precisa imprimir o campo 'próximo'
