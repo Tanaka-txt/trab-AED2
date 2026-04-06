@@ -62,3 +62,4 @@ void read_bin(char *arq_bin){
 
     fclose(teste); // fecha o arquivo após terminar a leitura completa
 }
+}

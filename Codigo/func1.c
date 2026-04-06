@@ -39,6 +39,24 @@ void create_cabecalho(){
   cabecalho.nroParesEstacoes = 0;
 }
 
+//                 RegEstacoes   Estacoes   totalEstacoes
+int existe_estacao(char *nome, char **lista, int tamanho){ // função de busca!👀
+    for(int i = 0; i < tamanho; i++){  // Faz um loop com o total de estacoes👀
+        if(strcmp(nome, lista[i]) == 0) // Verifica o nome da estação atual com o a lista de nome de estações👀
+            return 1;
+    }
+    return 0;
+}
+
+//Pares Estações 👀
+int existe_par(int a, int b, Par *lista, int tamanho){ //👀
+  for(int i = 0; i < tamanho; i++){ // 👀
+    if(lista[i].origem == a && lista[i].destino == b) // 👀
+        return 1; // 👀
+  }
+    return 0; // 👀
+}
+
 void create_regi_bin(char arq_csv[256], char arq_bin[256]){
     // =-=-= Abrimos o Arquivo CSV e Binário=-=-=
     FILE *csv = fopen(arq_csv, "r"); 
