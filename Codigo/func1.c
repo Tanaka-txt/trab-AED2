@@ -2,7 +2,6 @@
 
 // Definição de Var
 
-
 // Pares Estações
 typedef struct {
     int origem;
