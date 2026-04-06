@@ -42,7 +42,8 @@ void read_bin(char *arq_bin){
     // while vai ler cada linha do arquivo, baseando no tamanho fixo de 80 bytes e fread lê o arquivo e o fseek pular79 bytes quando o removido for 1
 
     while (1){
-    
+        memset(&registro, 0, sizeof(reg_dados)); // zerando a struct para garantir que os ponteiros comecem como NULL
+
         status_leitura = ler_registro(teste, &registro); // a função ler_registro lê o byte "removido" ('0' ou '1') e os demais dados do registro
 
         if (status_leitura == 0){ // arquivo acabou --> sai do laço while

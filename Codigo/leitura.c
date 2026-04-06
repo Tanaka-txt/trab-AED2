@@ -10,6 +10,7 @@ int ler_registro(FILE *binario, reg_dados *registro){ // como 'registro' foi rec
 
     if(registro->status_removido == '1'){ // significa que o registro foi apagado depois de ler o 1º byte e a linha será pulada
         fseek(binario, 79, SEEK_CUR);     // como já leu o 1º pula o restante (79 bytes a partir da posição atual) indo para a próxima linha
+        return 2; 
     }
     
     fseek(binario, 4, SEEK_CUR); // pula os 4 bytes do campo "próximo" (RRN do próximo registro removido)
@@ -28,6 +29,8 @@ int ler_registro(FILE *binario, reg_dados *registro){ // como 'registro' foi rec
             registro->nomeEstacao = malloc(registro->tamNomeEstacao + 1);                   // malloc aloca memória dinâmica, o +1 garante espaço para o caractere ('\0')
             fread(registro->nomeEstacao, sizeof(char), registro->tamNomeEstacao, binario);  // lê a quantidade de letras especificada, sem ler o lixo do arquivo 
             registro->nomeEstacao[registro->tamNomeEstacao] = '\0';                         // insere o '\0' para que printf e strcmp funcionem na memória, já que o arquivo não armazena esse caractere
+        } else {
+            registro->nomeEstacao = NULL; // <--- proteção extra contra Segmentation Fault
         }
 
     fread(&registro->tamNomeLinha, sizeof(int), 1, binario);
@@ -35,6 +38,8 @@ int ler_registro(FILE *binario, reg_dados *registro){ // como 'registro' foi rec
             registro->nomeLinha = malloc(registro->tamNomeLinha + 1); 
             fread(registro->nomeLinha, sizeof(char), registro->tamNomeLinha, binario); 
             registro->nomeLinha[registro->tamNomeLinha] = '\0'; 
+        } else {
+            registro->nomeLinha = NULL; // <--- proteção extra contra Segmentation Fault
         }
     
     // somando apenas os bytes fixos: 1 do removido, 4 do próximo, 24 do bloco fico, 4 do tamNomeEstacao e 4 tamNomeLinha = 37 bytes

@@ -113,7 +113,7 @@ void busca_bin(char *arq_bin){
         int status_leitura;     // variável para ser ajudante de leitura da função ler_registro
 
         while (1){
-
+            memset(&registro, 0, sizeof(reg_dados)); // zerando a struct para garantir que os ponteiros comecem como NULL
             status_leitura = ler_registro(teste, &registro); // a função ler_registro lê o byte "removido" ('0' ou '1') e os demais dados do registro
 
             if (status_leitura == 0){ // arquivo acabou --> sai do laço while
@@ -134,8 +134,11 @@ void busca_bin(char *arq_bin){
             if (painel.busca_codEstIntegra == 1 && registro.codEstIntegra == painel.valor_codEstIntegra) pontos ++;
 
             // para os textos, é preciso usar strcmp para realizar a comparação
-            if (painel.busca_nomeEstacao == 1 && strcmp (registro.nomeEstacao, painel.valor_nomeEstacao) == 0) pontos ++;
-            if (painel.busca_nomeLinha == 1 && strcmp (registro.nomeLinha, painel.valor_nomeLinha) == 0) pontos ++;
+            if (painel.busca_nomeEstacao == 1 && registro.nomeEstacao != NULL && strcmp (registro.nomeEstacao, painel.valor_nomeEstacao) == 0) pontos ++;
+            if (painel.busca_nomeLinha == 1 && registro.nomeLinha != NULL && strcmp (registro.nomeLinha, painel.valor_nomeLinha) == 0) pontos ++;
+            /* A função strcmp quebra o programa se tentar ler um ponteiro NULL. Colocando a verificação '!= NULL' antes do strcmp com '&&', o C testa a existência da string primeiro. 
+               Se for NULL, a verificação "entra em curto-circuito" (já dá a condição inteira como falsa) e ignora a execução do strcmp e não dá Segmentation Fault.
+            */
 
             if (pontos == m){ // se a quantidade de pontos for igual ao nº de exigências vai ser um registro válido
                 registroValido ++; // ncrementa para provar que a busca encontrou pelo menos um resultado
